@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 
-const errorHandler = require('./utils/errorHandler');
-const userRoutes = require('./routes/userRoutes');
+import errorHandler from './utils/errorHandler.js';
+import userRoutes from './routes/userRoutes.js';
 
 const app = express();
 
@@ -16,4 +16,4 @@ app.use((req, res, next) => {
 app.use(errorHandler);
 
 
-module.exports = app;
+export default app;

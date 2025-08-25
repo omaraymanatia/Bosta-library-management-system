@@ -1,10 +1,12 @@
-const bcrypt = require("bcrypt");
+import prisma from '../prisma/client.js';
 
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+import bcrypt from "bcrypt";
+
+import catchAsync from '../utils/catchAsync.js';
+import AppError from '../utils/appError.js';
 
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
+export const getAllUsers = catchAsync(async (req, res, next) => {
   const users = await prisma.user.findMany();
   res.status(200).json({
     success: true,
@@ -14,7 +16,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createUser = catchAsync(async (req, res, next) => {
+export const createUser = catchAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 12);
@@ -41,7 +43,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
 });
 
 
-exports.updateUser = catchAsync(async (req, res, next) => {
+export const updateUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
 
@@ -69,7 +71,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteUser = catchAsync(async (req, res, next) => {
+export const deleteUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   await prisma.user.delete({
@@ -83,7 +85,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 });
 
 
-exports.getUserById = catchAsync(async (req, res, next) => {
+export const getUserById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   const user = await prisma.user.findUnique({
@@ -107,7 +109,7 @@ exports.getUserById = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateUserById = catchAsync(async (req, res, next) => {
+export const updateUserById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
 
@@ -135,7 +137,7 @@ exports.updateUserById = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteUserById = catchAsync(async (req, res, next) => {
+export const deleteUserById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   await prisma.user.delete({
@@ -147,3 +149,4 @@ exports.deleteUserById = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
