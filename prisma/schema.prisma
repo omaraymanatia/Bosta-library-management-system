@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  role      Role     @default(USER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+
+  borrows   Borrow[]
+
+  @@index([email])
+}
+
+model Book {
+  id                Int      @id @default(autoincrement())
+  isbn              String   @unique
+  title             String
+  author            String
+  shelfLocation     String
+  totalQuantity     Int
+  availableQuantity Int
+  isActive          Boolean  @default(true)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  borrows           Borrow[]
+
+  @@index([isbn, title, author])
+}
+
+model Borrow {
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  bookId     Int
+  borrowedAt DateTime     @default(now())
+  dueAt      DateTime?
+  returnedAt DateTime?
+  approvedAt DateTime?
+  renewedAt  DateTime?
+  status     BorrowStatus @default(PENDING)
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId, borrowedAt])
+
+  @@index([userId])
+  @@index([bookId])
+  @@index([status])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum BorrowStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  RETURNED
+  OVERDUE
+}
