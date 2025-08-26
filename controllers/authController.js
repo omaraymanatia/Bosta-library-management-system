@@ -38,6 +38,8 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
+
+// Login
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -60,6 +62,7 @@ export const login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+// Register
 export const signup = catchAsync(async (req, res, next) => {
   const { email, password, name } = req.body;
 
@@ -87,6 +90,7 @@ export const signup = catchAsync(async (req, res, next) => {
   createSendToken(newUser, 201, res);
 });
 
+// Check if the user is logged in
 export const protect = catchAsync(async (req, res, next) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -120,6 +124,7 @@ export const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// Restrict access to APIs
 export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
@@ -132,6 +137,7 @@ export const restrictTo = (...roles) => {
   };
 };
 
+// Logout
 export const logout = (req, res) => {
   res.cookie('jwt', 'logged out', {
     expires: new Date(Date.now() + 10 * 1000),

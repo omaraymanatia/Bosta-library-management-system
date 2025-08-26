@@ -4,14 +4,15 @@ import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
 
+// List / search for books by isbn, title or author
 export const getAllBooks = catchAsync(async (req, res, next) => {
   const {title, author, isbn} = req.query;
   const books = await prisma.book.findMany({
     where: {
       AND: [
-        title ? { title: { contains: title, mode: 'insensitive' } } : {},
-        author ? { author: { contains: author, mode: 'insensitive' } } : {},
-        isbn ? { isbn: { contains: isbn, mode: 'insensitive' } } : {},
+        title ? { title: { contains: title, mode: 'insensitive' } } : {}, // filter by title if provided
+        author ? { author: { contains: author, mode: 'insensitive' } } : {}, // filter by author
+        isbn ? { isbn: { contains: isbn, mode: 'insensitive' } } : {}, // filter by isbn
       ],
     },
   });
@@ -23,6 +24,7 @@ export const getAllBooks = catchAsync(async (req, res, next) => {
   });
 });
 
+// Create a new book by admin only
 export const createBook = catchAsync(async (req, res, next) => {
   const { isbn, title, author, shelfLocation, totalQuantity } = req.body;
 
@@ -66,7 +68,7 @@ export const createBook = catchAsync(async (req, res, next) => {
   });
 });
 
-
+// Get a book by ID
 export const getBookById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
@@ -95,6 +97,7 @@ export const getBookById = catchAsync(async (req, res, next) => {
   });
 });
 
+// Update book details by admin only
 export const updateBook = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { isbn, title, author, shelfLocation, totalQuantity } = req.body;
@@ -108,7 +111,7 @@ export const updateBook = catchAsync(async (req, res, next) => {
   }
 
   const newAvailable =
-    totalQuantity - oldBook.totalQuantity + oldBook.availableQuantity;
+    totalQuantity - oldBook.totalQuantity + oldBook.availableQuantity; // If new books are added to the inventory, we should also consider the books that are currently borrowed
 
   const updatedBook = await prisma.book.update({
     where: { id: Number(id) },
@@ -140,6 +143,7 @@ export const updateBook = catchAsync(async (req, res, next) => {
 });
 
 
+// Delete a book by admin only
 export const deleteBook = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 

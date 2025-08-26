@@ -3,19 +3,21 @@ import prisma from '../prisma/client.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
+// list and search for borrows history
 export const getAllBorrows = catchAsync(async (req, res, next) => {
   const { userId, bookId, status, overdue, sortByOverdue } = req.query;
 
   const isAdmin = req.user.role === 'ADMIN';
   const now = new Date();
 
+  // If the user is not an admin, only show his own borrows history
   let borrows = await prisma.borrow.findMany({
     where: {
       ...(isAdmin ? {} : { userId: req.user.id }),
       ...(userId && { userId: Number(userId) }),
       ...(bookId && { bookId: Number(bookId) }),
-      ...(status && { status }),
-      ...(overdue === 'true' && {
+      ...(status && { status }), // Filter by status
+      ...(overdue === 'true' && { // filter by overdue
         dueAt: { lt: now },
         returnedAt: null,
       }),
@@ -57,6 +59,7 @@ export const getAllBorrows = catchAsync(async (req, res, next) => {
   });
 });
 
+// Create a borrow request for the user so the admin can accept or reject it
 export const createBorrow = catchAsync(async (req, res, next) => {
   const { bookId, dueAt } = req.body;
 
@@ -108,6 +111,7 @@ export const createBorrow = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get a borrow by ID
 export const getBorrowById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
@@ -149,6 +153,8 @@ export const getBorrowById = catchAsync(async (req, res, next) => {
   });
 });
 
+// Admin updates the borrow so he can approve a borrow request or reject it or return a book for the user
+// User updates the bookId while borrow is still PENDING
 export const updateBorrow = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { bookId, status } = req.body;
@@ -210,6 +216,8 @@ export const updateBorrow = catchAsync(async (req, res, next) => {
   });
 });
 
+// Delete a borrow by the admin
+// User can only delete a borrow if it's still pending
 export const deleteBorrow = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
@@ -223,6 +231,11 @@ export const deleteBorrow = catchAsync(async (req, res, next) => {
 
   if (req.user.role !== 'ADMIN' && existingBorrow.userId !== req.user.id) {
     return next(new AppError('You can only delete your own borrows', 403));
+  }
+
+  // Users can only delete borrows that are still pending
+  if (req.user.role !== 'ADMIN' && existingBorrow.status !== 'PENDING') {
+    return next(new AppError('You can only delete borrows that are still pending', 400));
   }
 
   await prisma.borrow.delete({

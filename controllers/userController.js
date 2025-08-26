@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
-
+// Get all users by admin only
 export const getAllUsers = catchAsync(async (req, res, next) => {
   const users = await prisma.user.findMany({
     select: {
@@ -23,6 +23,7 @@ export const getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+// create a new user by admin only
 export const createUser = catchAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
 
@@ -62,6 +63,7 @@ export const createUser = catchAsync(async (req, res, next) => {
 });
 
 
+// Update a user by admin only
 export const updateUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
@@ -97,6 +99,7 @@ export const updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
+// delete a user by admin only
 export const deleteUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
@@ -118,6 +121,7 @@ export const deleteUser = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get a user by ID by admin only
 export const getUserById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
