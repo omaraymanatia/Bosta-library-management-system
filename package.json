@@ -23,7 +23,9 @@
     "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
-    "jsonwebtoken": "^9.0.2"
+    "json2csv": "^6.0.0-alpha.2",
+    "jsonwebtoken": "^9.0.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",

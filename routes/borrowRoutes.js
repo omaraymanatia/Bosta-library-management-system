@@ -8,9 +8,15 @@ const router = express.Router();
 
 router.use(authController.protect);
 
+// Reports routes (admin only)
+router
+  .route('/reports')
+  .get(authController.restrictTo('ADMIN'), borrowController.getBorrowReports);
+
+
 router
   .route('/')
-  .get(authController.restrictTo('ADMIN'), borrowController.getAllBorrows) // admin gets all borrows
+  .get(borrowController.getAllBorrows) // admin gets all borrows, users get their own
   .post(borrowController.createBorrow) // user creates a borrow request
 
 
