@@ -49,6 +49,15 @@ This system enables efficient management of books, users, and borrowing operatio
 
 ---
 
+## 🖼️ System Design
+
+- [Use Case Diagram](https://drive.google.com/file/d/1DO4JhgTOM_pwkQJUW3SpQRE5SYz6QlGD/view?usp=drive_link)
+- [Flowchart Diagram](https://drive.google.com/file/d/1SlIjsb49nuuWiXTV-nxk_9puX_tt5csu/view?usp=drive_link)  
+- [ERD](https://drive.google.com/file/d/11b7mvBJHNdtxafF54YQj9_TFYp0pMMev/view?usp=drive_link)  
+- [Schema](https://drive.google.com/file/d/1L7-q1yPgjOjR1OLQo4E2aVuxZMFbL8tl/view?usp=drive_link)  
+
+---
+
 ## 🚀 Getting Started
 
 ### 📌 Prerequisites
