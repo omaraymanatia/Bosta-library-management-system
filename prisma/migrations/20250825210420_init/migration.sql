@@ -2,13 +2,14 @@
 CREATE TYPE "public"."Role" AS ENUM ('USER', 'ADMIN');
 
 -- CreateEnum
-CREATE TYPE "public"."BorrowStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'RETURNED', 'OVERDUE');
+CREATE TYPE "public"."BorrowStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'RETURNED');
 
 -- CreateTable
 CREATE TABLE "public"."User" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "role" "public"."Role" NOT NULL DEFAULT 'USER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -39,10 +40,9 @@ CREATE TABLE "public"."Borrow" (
     "userId" INTEGER NOT NULL,
     "bookId" INTEGER NOT NULL,
     "borrowedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "dueAt" TIMESTAMP(3),
+    "dueAt" TIMESTAMP(3) NOT NULL,
     "returnedAt" TIMESTAMP(3),
     "approvedAt" TIMESTAMP(3),
-    "renewedAt" TIMESTAMP(3),
     "status" "public"."BorrowStatus" NOT NULL DEFAULT 'PENDING',
 
     CONSTRAINT "Borrow_pkey" PRIMARY KEY ("id")

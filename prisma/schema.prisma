@@ -19,6 +19,7 @@ model User {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
+  password  String
   role      Role     @default(USER)
 
   createdAt DateTime @default(now())
@@ -53,10 +54,9 @@ model Borrow {
   userId     Int
   bookId     Int
   borrowedAt DateTime     @default(now())
-  dueAt      DateTime?
+  dueAt      DateTime
   returnedAt DateTime?
   approvedAt DateTime?
-  renewedAt  DateTime?
   status     BorrowStatus @default(PENDING)
 
   user User @relation(fields: [userId], references: [id])
@@ -79,5 +79,4 @@ enum BorrowStatus {
   APPROVED
   REJECTED
   RETURNED
-  OVERDUE
 }
